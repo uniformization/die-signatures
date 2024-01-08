@@ -1,0 +1,34 @@
+init("format", "");
+
+// reference: https://github.com/RobloxAPI/spec/blob/master/formats/rbxl.md
+function detect(bShowType, bShowVersion, bShowOptions) {
+  function endsWith(str, target) {
+    return str.substr(-target.length) === target
+  }
+
+  function setName(isBinary, fileSuffix) {
+    var result = "Roblox ";
+    if (endsWith(fileSuffix, "rbxl") || endsWith(fileSuffix, "rbxlx")) {
+      result += "Location ";
+    } else if (endsWith(fileSuffix, "rbxm" || endsWith(fileSuffix, "rbxmx"))) {
+      result += "Model ";
+    } else {
+      result += "File Format ";
+    }
+    result += (isBinary ? "Binary" : "XML");
+    return result;
+  }
+
+  if (Binary.compare("'<roblox!'89ff0d0a1a0a")) {
+    bDetected = true;
+    sName = setName(true, Binary.getFileSuffix());
+    sVersion = Binary.readByte(0xE); // currently, always 0
+  } else if (Binary.compare("'<roblox '") || Binary.compare("<roblox>")) {
+    bDetected = true;
+    sName = setName(false, Binary.getFileSuffix());
+    if (!Binary.compare("<roblox>"))
+      sVersion = Binary.getString(0x0, 0xBB).match(/version="([^"]+)"/)[1]; // currently, always 4
+  }
+
+  return result(bShowType, bShowVersion, bShowOptions);
+}
