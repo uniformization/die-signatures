@@ -23,10 +23,10 @@ function detect(bShowType, bShowVersion, bShowOptions) {
     bDetected = true;
     sName = setName(true, Binary.getFileSuffix());
     sVersion = Binary.readByte(0xE); // currently, always 0
-  } else if (Binary.compare("'<roblox '") || Binary.compare("<roblox>")) {
+  } else if (Binary.compare("'<roblox '") || Binary.compare("'<roblox>'")) {
     bDetected = true;
     sName = setName(false, Binary.getFileSuffix());
-    if (!Binary.compare("<roblox>"))
+    if (!Binary.compare("'<roblox>'"))
       sVersion = Binary.getString(0x0, 0xBB).match(/version="([^"]+)"/)[1]; // currently, always 4
   }
 
