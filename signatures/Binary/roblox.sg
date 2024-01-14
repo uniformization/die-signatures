@@ -28,6 +28,14 @@ function detect(bShowType, bShowVersion, bShowOptions) {
     sName = setName(false, Binary.getFileSuffix());
     if (!Binary.compare("'<roblox>'"))
       sVersion = Binary.getString(0x0, 0xBB).match(/version="([^"]+)"/)[1]; // currently, always 4
+  } else if (Binary.compare("'version '")) {
+    if (Binary.readByte(0xC) == 0xA) { // check for newline
+      // unknown if there will ever be a version number different than x.xx
+      // but i'll update it if there ever is
+      bDetected = true;
+      sName = "Roblox Mesh Format";
+      sVersion = Binary.getString(0x8, 0x4);
+    }
   }
 
   return result(bShowType, bShowVersion, bShowOptions);
